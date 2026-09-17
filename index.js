@@ -258,8 +258,7 @@ function addTopBar() {
     searchInput.classList.add('text_pole');
     searchInput.type = 'search';
     searchInput.addEventListener('input', () => searchDebounced(searchInput.value.trim()));
-    // Keep toolbar gestures away from delegated chat/swipe handlers. Native
-    // scrolling and clicks still work: do not cancel default browser actions.
+   
     const mobileToolbar = window.matchMedia('(max-width: 1000px)');
     for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel',
         'pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'wheel']) {
@@ -672,10 +671,6 @@ function restorePanelsState() {
     }
 }
 
-/** Reserve space only when a theme takes the toolbar out of normal flow.
- * Observe specific elements and body classes, never the document subtree.
- * No :has() selectors or continuous polling are needed.
- */
 function observeTopBarLayout() {
     let frame = null;
     function update() {
