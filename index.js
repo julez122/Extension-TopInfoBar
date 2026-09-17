@@ -258,6 +258,15 @@ function addTopBar() {
     searchInput.classList.add('text_pole');
     searchInput.type = 'search';
     searchInput.addEventListener('input', () => searchDebounced(searchInput.value.trim()));
+    // Keep toolbar gestures away from delegated chat/swipe handlers. Native
+    // scrolling and clicks still work: do not cancel default browser actions.
+    const mobileToolbar = window.matchMedia('(max-width: 1000px)');
+    for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel',
+        'pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'wheel']) {
+        topBar.addEventListener(eventName, (event) => {
+            if (mobileToolbar.matches) event.stopPropagation();
+        }, { passive: true });
+    }
     topBar.append(chatName, searchInput);
     sheld.insertBefore(topBar, chat);
 }
@@ -663,12 +672,53 @@ function restorePanelsState() {
     }
 }
 
+/** Reserve space only when a theme takes the toolbar out of normal flow.
+ * Observe specific elements and body classes, never the document subtree.
+ * No :has() selectors or continuous polling are needed.
+ */
+function observeTopBarLayout() {
+    let frame = null;
+    function update() {
+        frame = null;
+        const fixed = getComputedStyle(topBar).position === 'fixed';
+        const reserveSpace = fixed && !document.body.classList.contains('waifuMode');
+        if (reserveSpace) {
+            const space = Math.max(0, topBar.getBoundingClientRect().bottom - sheld.getBoundingClientRect().top);
+            const value = `${Math.ceil(space)}px`;
+            if (sheld.style.getPropertyValue('--top-info-bar-space') !== value) {
+                sheld.style.setProperty('--top-info-bar-space', value);
+            }
+        } else {
+            sheld.style.removeProperty('--top-info-bar-space');
+        }
+        sheld.classList.toggle('top-info-bar-fixed-space', reserveSpace);
+    }
+    function schedule() {
+        if (frame === null) frame = requestAnimationFrame(update);
+    }
+    const resizeObserver = new ResizeObserver(schedule);
+    resizeObserver.observe(topBar);
+    for (const id of ['top-bar', 'top-settings-holder']) {
+        const element = document.getElementById(id);
+        if (element) resizeObserver.observe(element);
+    }
+    const bodyObserver = new MutationObserver(schedule);
+    bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', schedule, { passive: true });
+    // Theme styles can load after the extension initializes.
+    document.addEventListener('load', (event) => {
+        if (event.target instanceof HTMLLinkElement && event.target.rel === 'stylesheet') schedule();
+    }, true);
+    update();
+}
+
 // Init extension on load
 (async function () {
     addJQueryHighlight();
     patchSheldIfNeeded();
     addTopBar();
     addIcons();
+    observeTopBarLayout();
     addSideBar();
     addConnectionProfiles();
     setChatName(getCurrentChatId());
