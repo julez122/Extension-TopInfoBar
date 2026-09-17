@@ -241,8 +241,6 @@ body.movingUI #extensionTopBar {
     border-color: transparent;
 }
 
-/* Wrapped controls must contribute to the bar's height, including when a
-   companion theme gives this bar fixed positioning. */
 body #extensionTopBar {
     box-sizing: border-box;
     height: auto;
@@ -271,14 +269,10 @@ body #extensionTopBarSearchInput {
     flex: 1 1 8em;
 }
 
-/* Extra specificity overrides Moonlit's fixed padding without modifying it.
-   Normal in-flow toolbars and visual-novel mode do not receive this class. */
 body #sheld.top-info-bar-fixed-space {
     padding-top: var(--top-info-bar-space) !important;
 }
 
-/* Keep phone layouts to one compact row. All controls remain reachable by
-   horizontal scrolling instead of wrapping into a second row. */
 @media screen and (max-width: 1000px) {
     body #extensionTopBar {
         flex-wrap: nowrap;
