@@ -247,7 +247,7 @@ body #extensionTopBar {
     min-height: var(--bottomFormBlockSize);
     align-content: flex-start;
     align-items: center;
-    padding-block: 6px;
+    padding-block: 0px;
     row-gap: 6px;
     transition: opacity 0.5s ease, background-color 0.5s ease;
 }
@@ -297,6 +297,7 @@ body #sheld.top-info-bar-fixed-space {
         flex: 0 0 5em;
         width: 5em;
         margin-block: 0;
+        font-size: 13px;
     }
 
     body #extensionTopBarSearchInput {
@@ -304,5 +305,6 @@ body #sheld.top-info-bar-fixed-space {
         width: 7em;
         max-width: none;
         margin-block: 0;
+        font-size: 13px;
     }
 }
