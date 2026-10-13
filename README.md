@@ -4,6 +4,7 @@
 
 - Includes the mobile layout fix from the `main` branch. [⤷](https://github.com/julez122/Extension-TopInfoBar/commit/4916aed638e52c39b6fe0e8021af445d132c37a8)
 - **Fix:** Removed the `padding-block` that gave the top bar on desktop an unnecessary height. Made the `font-size` on mobile smaller.
+- **Fix:** Reduced the dropdown arrow size and spacing, and added a translucent background to the horizontally scrollable top bar on smaller screens.
 
 ---
 

@@ -258,7 +258,7 @@ function addTopBar() {
     searchInput.classList.add('text_pole');
     searchInput.type = 'search';
     searchInput.addEventListener('input', () => searchDebounced(searchInput.value.trim()));
-   
+
     const mobileToolbar = window.matchMedia('(max-width: 1000px)');
     for (const eventName of ['touchstart', 'touchmove', 'touchend', 'touchcancel',
         'pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'wheel']) {
